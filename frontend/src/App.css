@@ -18,12 +18,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 50px;
-  background-color: #ffffff;
+  background-color: #000000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .logo-title {
-  color: #000000; /* Đảm bảo chữ tiêu đề hiển thị màu đen */
+  color: #ffffff; /* Đảm bảo chữ tiêu đề hiển thị màu đen */
   font-size: 28px;
   font-weight: bold;
 }
@@ -36,20 +36,20 @@
 
 .nav-links a {
   text-decoration: none;
-  color: #333;
+  color: #ffffff;
   font-weight: bold;
   transition: color 0.3s;
 }
 
 .nav-links a:hover {
-  color: #e63946;
+  color: #e1ad01;
 }
 
 /* Hero Section */
 .hero-section {
   text-align: center;
   padding: 80px 20px;
-  background-color: #e0e7ff;
+  background-color: #e1ad01;
 }
 
 .hero-section h2 {
@@ -130,4 +130,23 @@
   color: #e63946;
   font-weight: bold;
   font-size: 18px;
+}
+
+/* Định dạng cho các trang con (About, Contact) */
+.page-container {
+  padding: 80px 20px;
+  text-align: center;
+  background-color: #e1ad01;
+}
+
+.page-title {
+  color: #000000;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.page-desc {
+  color: #555555;
+  font-size: 18px;
+  line-height: 1.6;
 }
