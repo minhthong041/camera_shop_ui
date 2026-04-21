@@ -150,3 +150,20 @@
   font-size: 18px;
   line-height: 1.6;
 }
+
+/* Nút Xóa sản phẩm */
+.btn-delete {
+  margin-top: 15px;
+  padding: 8px 15px;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.btn-delete:hover {
+  background-color: #d9363e;
+}
