@@ -5,25 +5,30 @@ import "./App.css";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 
-// THAY ĐỔI ĐƯỜNG LINK NÀY THÀNH PORT BACK-END CỦA BẠN
+// Địa chỉ API Back-end của bạn
 const API_URL = "http://localhost:5187/api/products";
 
 const Home = () => {
-  // Biến state lưu trữ danh sách sản phẩm lấy từ Database
   const [products, setProducts] = useState([]);
 
-  // 1. GET - Lấy dữ liệu khi trang vừa load
+  // State quản lý trạng thái Sửa sản phẩm
+  const [editingId, setEditingId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    price: 0,
+    imageUrl: "",
+  });
+
+  // 1. GET - Lấy danh sách sản phẩm
   const fetchProducts = async () => {
     try {
       const response = await axios.get(API_URL);
       setProducts(response.data);
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu:", error);
-      alert("Không thể kết nối đến Server. Hãy chắc chắn Back-end đang chạy!");
     }
   };
 
-  // Dùng useEffect để tự động gọi hàm fetchProducts 1 lần khi mở trang
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -38,7 +43,7 @@ const Home = () => {
     };
     try {
       await axios.post(API_URL, newProduct);
-      fetchProducts(); // Tải lại danh sách sau khi thêm thành công
+      fetchProducts(); // Tải lại danh sách
     } catch (error) {
       console.error("Lỗi khi thêm:", error);
     }
@@ -49,11 +54,37 @@ const Home = () => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
       try {
         await axios.delete(`${API_URL}/${id}`);
-        fetchProducts(); // Tải lại danh sách sau khi xóa
+        fetchProducts(); // Tải lại danh sách
       } catch (error) {
         console.error("Lỗi khi xóa:", error);
       }
     }
+  };
+
+  // 4. PUT - Tính năng Sửa sản phẩm
+  const handleEditClick = (product) => {
+    setEditingId(product.id);
+    setEditFormData({
+      name: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+    });
+  };
+
+  const handleUpdateProduct = async (id) => {
+    try {
+      const updatedProduct = { id: id, ...editFormData };
+      await axios.put(`${API_URL}/${id}`, updatedProduct);
+      setEditingId(null); // Tắt form sửa
+      fetchProducts(); // Tải lại danh sách
+    } catch (error) {
+      console.error("Lỗi khi cập nhật:", error);
+    }
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData({ ...editFormData, [name]: value });
   };
 
   return (
@@ -61,7 +92,6 @@ const Home = () => {
       <section className="hero-section">
         <h2>Khám phá thế giới qua ống kính của bạn</h2>
         <p>Chuyên cung cấp các dòng máy ảnh DSLR, Mirrorless chính hãng.</p>
-        {/* Nút bấm để test API thêm dữ liệu */}
         <button className="btn-shop" onClick={handleAddProduct}>
           + Thêm sản phẩm mẫu vào Database
         </button>
@@ -71,23 +101,77 @@ const Home = () => {
         <h3 className="section-title">Sản phẩm nổi bật ({products.length})</h3>
 
         <div className="product-grid">
-          {/* Kiểm tra nếu không có sản phẩm nào thì báo */}
           {products.length === 0 && <p>Chưa có sản phẩm nào trong cửa hàng.</p>}
 
-          {/* Dùng hàm map() để duyệt qua mảng dữ liệu và in ra giao diện */}
           {products.map((p) => (
             <div className="product-card" key={p.id}>
-              <img src={p.imageUrl} alt={p.name} className="product-image" />
-              <h4>{p.name}</h4>
-              <p>{p.price.toLocaleString("vi-VN")} VNĐ</p>
+              {/* Giao diện khi bấm nút Sửa */}
+              {editingId === p.id ? (
+                <div className="edit-form">
+                  <input
+                    type="text"
+                    name="name"
+                    value={editFormData.name}
+                    onChange={handleFormChange}
+                    placeholder="Tên sản phẩm"
+                  />
+                  <input
+                    type="number"
+                    name="price"
+                    value={editFormData.price}
+                    onChange={handleFormChange}
+                    placeholder="Giá tiền"
+                  />
+                  <input
+                    type="text"
+                    name="imageUrl"
+                    value={editFormData.imageUrl}
+                    onChange={handleFormChange}
+                    placeholder="Link hình ảnh"
+                  />
 
-              {/* Nút Xóa */}
-              <button
-                className="btn-delete"
-                onClick={() => handleDeleteProduct(p.id)}
-              >
-                Xóa
-              </button>
+                  <div className="action-buttons">
+                    <button
+                      className="btn-save"
+                      onClick={() => handleUpdateProduct(p.id)}
+                    >
+                      Lưu
+                    </button>
+                    <button
+                      className="btn-cancel"
+                      onClick={() => setEditingId(null)}
+                    >
+                      Hủy
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Giao diện hiển thị bình thường */
+                <>
+                  <img
+                    src={p.imageUrl}
+                    alt={p.name}
+                    className="product-image"
+                  />
+                  <h4>{p.name}</h4>
+                  <p>{p.price.toLocaleString("vi-VN")} VNĐ</p>
+
+                  <div className="action-buttons">
+                    <button
+                      className="btn-edit"
+                      onClick={() => handleEditClick(p)}
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleDeleteProduct(p.id)}
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ))}
         </div>
@@ -96,7 +180,6 @@ const Home = () => {
   );
 };
 
-// ... Phần App component giữ nguyên
 function App() {
   return (
     <Router>

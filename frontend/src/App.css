@@ -167,3 +167,57 @@
 .btn-delete:hover {
   background-color: #d9363e;
 }
+
+/* Container chứa các nút bấm sát nhau */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Định dạng các nút bấm */
+.btn-delete,
+.btn-edit,
+.btn-save,
+.btn-cancel {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  transition: opacity 0.3s;
+}
+
+.btn-delete {
+  background-color: #ff4d4f;
+}
+.btn-edit {
+  background-color: #1890ff;
+}
+.btn-save {
+  background-color: #52c41a;
+}
+.btn-cancel {
+  background-color: #8c8c8c;
+}
+
+.btn-delete:hover,
+.btn-edit:hover,
+.btn-save:hover,
+.btn-cancel:hover {
+  opacity: 0.8;
+}
+
+/* Định dạng form khi đang sửa */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-form input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
